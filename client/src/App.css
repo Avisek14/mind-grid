@@ -1,0 +1,224 @@
+
+/* ============================================
+   FONTS IMPORT
+   ============================================ */
+@import '@fontsource/press-start-2p';
+@import '@fontsource/orbitron';
+
+/* ============================================
+   CSS VARIABLES — Dark Game Theme
+   ============================================ */
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-card: #1a1a2e;
+  --bg-card-hover: #16213e;
+
+  --purple-primary: #7c3aed;
+  --purple-secondary: #a855f7;
+  --purple-glow: #9333ea;
+  --blue-primary: #2563eb;
+  --blue-secondary: #3b82f6;
+  --blue-glow: #60a5fa;
+  --cyan-accent: #06b6d4;
+
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --text-muted: #52525b;
+
+  --green-correct: #22c55e;
+  --green-glow: #16a34a;
+  --red-wrong: #ef4444;
+  --red-glow: #dc2626;
+  --yellow-warning: #eab308;
+
+  --border-color: #2d2d3d;
+  --border-glow: #7c3aed;
+
+  --font-game: 'Press Start 2P', cursive;
+  --font-main: 'Orbitron', sans-serif;
+}
+
+/* ============================================
+   GLOBAL RESET
+   ============================================ */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ============================================
+   SCROLLBAR STYLING
+   ============================================ */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--purple-primary);
+  border-radius: 3px;
+}
+
+/* ============================================
+   ANIMATED BACKGROUND — Star particles effect
+   ============================================ */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================
+   COMMON BUTTON STYLES
+   ============================================ */
+.btn-primary {
+  background: linear-gradient(135deg, var(--purple-primary), var(--blue-primary));
+  color: white;
+  border: none;
+  padding: 14px 32px;
+  font-family: var(--font-game);
+  font-size: 10px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 35px rgba(124, 58, 237, 0.7);
+}
+
+.btn-primary:active {
+  transform: translateY(0px);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--purple-secondary);
+  border: 2px solid var(--purple-primary);
+  padding: 12px 28px;
+  font-family: var(--font-game);
+  font-size: 9px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(124, 58, 237, 0.15);
+  box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   GLOW TEXT EFFECT
+   ============================================ */
+.glow-text {
+  text-shadow:
+    0 0 10px var(--purple-secondary),
+    0 0 20px var(--purple-primary),
+    0 0 40px var(--purple-glow);
+}
+
+.glow-text-blue {
+  text-shadow:
+    0 0 10px var(--blue-secondary),
+    0 0 20px var(--blue-primary),
+    0 0 40px var(--blue-glow);
+}
+
+/* ============================================
+   CARD STYLE
+   ============================================ */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: var(--purple-primary);
+  box-shadow: 0 0 25px rgba(124, 58, 237, 0.2);
+}
+
+/* ============================================
+   INPUT STYLE
+   ============================================ */
+.input-field {
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 14px 18px;
+  font-family: var(--font-main);
+  font-size: 14px;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.input-field:focus {
+  border-color: var(--purple-primary);
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.3);
+}
+
+.input-field::placeholder {
+  color: var(--text-muted);
+}
+
+/* ============================================
+   PAGE WRAPPER
+   ============================================ */
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
