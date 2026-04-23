@@ -5,9 +5,9 @@ import Tile from './Tile'
 const Grid = ({ tiles, isVisible, revealedTiles, wrongTile, onTileClick, disabled }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
+      initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.6, type: 'spring', damping: 15 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
@@ -25,9 +25,9 @@ const Grid = ({ tiles, isVisible, revealedTiles, wrongTile, onTileClick, disable
       {tiles.map((tile, index) => (
         <motion.div
           key={index}
-          initial={{ opacity: 0, scale: 0 }}
+          initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: index * 0.03, type: 'spring', damping: 15 }}
+          transition={{ delay: index * 0.015, duration: 0.2, ease: 'easeOut' }}
         >
           <Tile
             number={tile.number}

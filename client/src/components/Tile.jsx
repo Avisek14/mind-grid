@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 const Tile = ({ number, isVisible, isRevealed, isCorrect, isWrong, isEmpty, onClick, disabled }) => {
 
-  // Tile ka color decide karo
   const getTileStyle = () => {
     if (isWrong) return {
       background: 'linear-gradient(135deg, #ef4444, #dc2626)',
@@ -34,10 +33,7 @@ const Tile = ({ number, isVisible, isRevealed, isCorrect, isWrong, isEmpty, onCl
 
   return (
     <motion.div
-      whileHover={!disabled && !isEmpty ? {
-        scale: 1.08,
-        boxShadow: '0 0 20px rgba(124,58,237,0.5)',
-      } : {}}
+      whileHover={!disabled && !isEmpty ? { scale: 1.06 } : {}}
       whileTap={!disabled ? { scale: 0.94 } : {}}
       onClick={() => !disabled && onClick()}
       style={{
@@ -50,35 +46,20 @@ const Tile = ({ number, isVisible, isRevealed, isCorrect, isWrong, isEmpty, onCl
         cursor: disabled || isEmpty ? 'default' : 'pointer',
         position: 'relative',
         overflow: 'hidden',
-        transition: 'border 0.3s ease, background 0.3s ease',
+        transition: 'border 0.2s ease, background 0.2s ease',
+        willChange: 'transform',
         ...getTileStyle(),
       }}
     >
-      {/* Shimmer on hover */}
-      {!disabled && !isEmpty && (
-        <motion.div
-          animate={{ x: ['-100%', '200%'] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          style={{
-            position: 'absolute',
-            top: 0, left: 0,
-            width: '30%', height: '100%',
-            background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
-            transform: 'skewX(-20deg)',
-            pointerEvents: 'none',
-          }}
-        />
-      )}
-
       {/* Number display */}
       <AnimatePresence mode="wait">
         {(isVisible || isRevealed || isCorrect || isWrong) && !isEmpty && number && (
           <motion.span
             key={`num-${number}`}
-            initial={{ scale: 0, rotate: -180, opacity: 0 }}
-            animate={{ scale: 1, rotate: 0, opacity: 1 }}
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            transition={{ type: 'spring', damping: 12 }}
+            transition={{ type: 'spring', damping: 15, stiffness: 300 }}
             style={{
               fontFamily: 'var(--font-game)',
               fontSize: 'clamp(16px, 3vw, 24px)',
@@ -95,7 +76,7 @@ const Tile = ({ number, isVisible, isRevealed, isCorrect, isWrong, isEmpty, onCl
           </motion.span>
         )}
 
-        {/* Hidden tile — question mark effect */}
+        {/* Hidden tile dot */}
         {!isVisible && !isRevealed && !isCorrect && !isWrong && !isEmpty && (
           <motion.div
             key="hidden"
@@ -106,7 +87,6 @@ const Tile = ({ number, isVisible, isRevealed, isCorrect, isWrong, isEmpty, onCl
               height: '12px',
               borderRadius: '50%',
               background: 'rgba(124,58,237,0.4)',
-              boxShadow: '0 0 8px rgba(124,58,237,0.3)',
             }}
           />
         )}

@@ -11,22 +11,23 @@ const Popup = ({ isOpen, onSelect }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
             style={{
               position: 'fixed',
               top: 0, left: 0,
               width: '100%', height: '100%',
               background: 'rgba(0,0,0,0.85)',
-              backdropFilter: 'blur(8px)',
+              backdropFilter: 'blur(6px)',
               zIndex: 100,
             }}
           />
 
-          {/* Outer wrapper — full screen centering */}
+          {/* Outer wrapper */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.5, y: 50 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.5, y: 50 }}
-            transition={{ type: 'spring', damping: 15 }}
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.85 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
             style={{
               position: 'fixed',
               top: 0, left: 0,
@@ -54,19 +55,15 @@ const Popup = ({ isOpen, onSelect }) => {
             }}>
 
               {/* Title */}
-              <motion.div
-                animate={{ opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                style={{
-                  fontFamily: 'var(--font-game)',
-                  fontSize: 'clamp(8px, 2.5vw, 11px)',
-                  color: 'var(--cyan-accent)',
-                  letterSpacing: '3px',
-                  marginBottom: '10px',
-                }}
-              >
+              <div style={{
+                fontFamily: 'var(--font-game)',
+                fontSize: 'clamp(8px, 2.5vw, 11px)',
+                color: 'var(--cyan-accent)',
+                letterSpacing: '3px',
+                marginBottom: '10px',
+              }}>
                 CHOOSE YOUR ORDER
-              </motion.div>
+              </div>
 
               <p style={{
                 fontFamily: 'var(--font-main)',
@@ -89,8 +86,8 @@ const Popup = ({ isOpen, onSelect }) => {
 
                 {/* Ascending */}
                 <motion.button
-                  whileHover={{ scale: 1.05, y: -3 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
                   onClick={() => onSelect('ascending')}
                   style={{
                     background: 'linear-gradient(135deg, #22c55e, #16a34a)',
@@ -104,12 +101,7 @@ const Popup = ({ isOpen, onSelect }) => {
                     maxWidth: '160px',
                   }}
                 >
-                  <div style={{
-                    fontSize: 'clamp(20px, 5vw, 28px)',
-                    marginBottom: '8px',
-                  }}>
-                    ⬆️
-                  </div>
+                  <div style={{ fontSize: 'clamp(20px, 5vw, 28px)', marginBottom: '8px' }}>⬆️</div>
                   <div style={{
                     fontFamily: 'var(--font-game)',
                     fontSize: 'clamp(7px, 2vw, 9px)',
@@ -130,8 +122,8 @@ const Popup = ({ isOpen, onSelect }) => {
 
                 {/* Descending */}
                 <motion.button
-                  whileHover={{ scale: 1.05, y: -3 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
                   onClick={() => onSelect('descending')}
                   style={{
                     background: 'linear-gradient(135deg, #ef4444, #dc2626)',
@@ -145,12 +137,7 @@ const Popup = ({ isOpen, onSelect }) => {
                     maxWidth: '160px',
                   }}
                 >
-                  <div style={{
-                    fontSize: 'clamp(20px, 5vw, 28px)',
-                    marginBottom: '8px',
-                  }}>
-                    ⬇️
-                  </div>
+                  <div style={{ fontSize: 'clamp(20px, 5vw, 28px)', marginBottom: '8px' }}>⬇️</div>
                   <div style={{
                     fontFamily: 'var(--font-game)',
                     fontSize: 'clamp(7px, 2vw, 9px)',
