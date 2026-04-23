@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Base URL — Development mein local, Production mein live URL
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'https://mind-grid-yj8b.onrender.com/api',
 });
 
 // Har request mein automatically token attach hoga
