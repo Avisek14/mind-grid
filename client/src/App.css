@@ -222,3 +222,51 @@ body::before {
   position: relative;
   z-index: 1;
 }
+
+
+/* ============================================
+   MOBILE RESPONSIVE
+   ============================================ */
+
+/* Desktop nav — mobile pe hide */
+.desktop-nav {
+  display: flex;
+}
+
+.hamburger-btn {
+  display: none;
+}
+
+/* 768px se neeche — mobile */
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none !important;
+  }
+
+  .hamburger-btn {
+    display: flex !important;
+  }
+
+  /* Page wrapper mobile */
+  .page-wrapper {
+    padding: 80px 16px 24px;
+  }
+
+  /* Cards mobile */
+  .card {
+    padding: 20px 16px;
+  }
+
+  /* Buttons mobile */
+  .btn-primary {
+    padding: 12px 24px;
+    font-size: 8px;
+  }
+}
+
+/* 480px se neeche — small phones */
+@media (max-width: 480px) {
+  .page-wrapper {
+    padding: 70px 12px 20px;
+  }
+}
