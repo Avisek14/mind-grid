@@ -38,15 +38,6 @@ const generateTiles = () => {
   return tiles
 }
 
-// =============================================
-// GAME PHASES:
-// 'memorize' → numbers visible
-// 'hidden'   → numbers hidden, waiting for first click
-// 'playing'  → order selected, game in progress
-// 'gameover' → wrong tile clicked
-// 'won'      → all correct tiles clicked
-// =============================================
-
 const Game = () => {
   const { difficulty, setGameResult, setTimeTaken, setSelectedOrder } = useGame()
   const navigate = useNavigate()
@@ -133,7 +124,7 @@ const Game = () => {
         // Sab 10 tiles click ho gaye?
         if (newRevealed.length === 10) {
           clearInterval(gameTimerRef.current)
-          setTimeout(() => handleWin(newRevealed, currentOrder), 500)
+          setTimeout(() => handleWin(newRevealed, currentOrder), 200) // ✅ Fix 4: 500 → 200
         }
         return newRevealed
       })
@@ -146,7 +137,6 @@ const Game = () => {
     } else {
       // ❌ Wrong!
       if (!warned) {
-        // Pehli galti — warning do
         const startNum = currentOrder === 'ascending' ? 1 : 10
         if (clickedNum !== startNum && !warned) {
           setWarningMsg(
@@ -162,7 +152,7 @@ const Game = () => {
       // Game over!
       setWrongTile(index)
       clearInterval(gameTimerRef.current)
-      setTimeout(() => handleGameOver(index, currentOrder), 800)
+      setTimeout(() => handleGameOver(index, currentOrder), 400) // ✅ Fix 1: 800 → 400
     }
   }
 
@@ -182,7 +172,7 @@ const Game = () => {
 
       if (newRevealed.length === 10) {
         clearInterval(gameTimerRef.current)
-        setTimeout(() => handleWin(newRevealed, order), 500)
+        setTimeout(() => handleWin(newRevealed, order), 200) // ✅ Fix 4: 500 → 200
         return
       }
 
@@ -199,7 +189,7 @@ const Game = () => {
       // Dusri galti — Game Over
       setWrongTile(index)
       clearInterval(gameTimerRef.current)
-      setTimeout(() => handleGameOver(index, order), 800)
+      setTimeout(() => handleGameOver(index, order), 400) // ✅ Fix 1: 800 → 400
     }
   }
 
@@ -236,7 +226,7 @@ const Game = () => {
       console.log('Score save error:', e)
     }
 
-    setTimeout(() => navigate('/result'), 1000)
+    setTimeout(() => navigate('/result'), 300) // ✅ Fix 3: 1000 → 300
   }
 
   // Game Over handler
@@ -256,7 +246,7 @@ const Game = () => {
       console.log('Score save error:', e)
     }
 
-    setTimeout(() => navigate('/result'), 1500)
+    setTimeout(() => navigate('/result'), 300) // ✅ Fix 2: 1500 → 300
   }
 
   // Phase label
