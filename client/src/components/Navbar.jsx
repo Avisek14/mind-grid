@@ -1,134 +1,333 @@
 
+import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useGame } from '../context/GameContext'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const Navbar = () => {
   const { user, logoutUser } = useGame()
   const navigate = useNavigate()
   const location = useLocation()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const handleLogout = () => {
     logoutUser()
     navigate('/')
+    setMenuOpen(false)
   }
 
   return (
-    <motion.nav
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: 'easeOut' }}
-      style={{
-        position: 'fixed',
-        top: 0, left: 0, right: 0,
-        zIndex: 1000,
-        background: 'rgba(10, 10, 15, 0.85)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(124, 58, 237, 0.3)',
-        padding: '16px 40px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}
-    >
-      {/* LOGO */}
-      <Link to="/" style={{ textDecoration: 'none' }}>
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          style={{
-            fontFamily: 'var(--font-game)',
-            fontSize: '16px',
-            background: 'linear-gradient(135deg, #a855f7, #3b82f6)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            textShadow: 'none',
-            filter: 'drop-shadow(0 0 8px rgba(168, 85, 247, 0.6))',
-          }}
+    <>
+      <motion.nav
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0,
+          zIndex: 1000,
+          background: 'rgba(10, 10, 15, 0.92)',
+          backdropFilter: 'blur(20px)',
+          borderBottom: '1px solid rgba(124, 58, 237, 0.3)',
+          padding: '14px 20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        {/* LOGO */}
+        <Link to="/" style={{ textDecoration: 'none' }} onClick={() => setMenuOpen(false)}>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            style={{
+              fontFamily: 'var(--font-game)',
+              fontSize: 'clamp(11px, 3vw, 16px)',
+              background: 'linear-gradient(135deg, #a855f7, #3b82f6)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              filter: 'drop-shadow(0 0 8px rgba(168, 85, 247, 0.6))',
+            }}
+          >
+            🧠 MINDGRID
+          </motion.div>
+        </Link>
+
+        {/* DESKTOP LINKS — 768px se upar dikhega */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '28px',
+        }}
+          className="desktop-nav"
         >
-          🧠 MINDGRID
-        </motion.div>
-      </Link>
+          <NavLink to="/leaderboard" current={location.pathname}>
+            🏆 LEADERBOARD
+          </NavLink>
 
-      {/* NAV LINKS */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
-        {/* Leaderboard — always visible */}
-        <NavLink to="/leaderboard" current={location.pathname}>
-          🏆 LEADERBOARD
-        </NavLink>
-
-        {user ? (
-          <>
-            {/* Welcome */}
-            <span style={{
-              fontFamily: 'var(--font-main)',
-              fontSize: '12px',
-              color: 'var(--cyan-accent)',
-              letterSpacing: '1px',
-            }}>
-              👾 {user.name.toUpperCase()}
-            </span>
-
-            {/* Logout */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleLogout}
-              style={{
-                background: 'transparent',
-                border: '1px solid var(--red-wrong)',
-                color: 'var(--red-wrong)',
-                padding: '8px 18px',
-                fontFamily: 'var(--font-game)',
-                fontSize: '8px',
-                cursor: 'pointer',
-                borderRadius: '6px',
+          {user ? (
+            <>
+              <span style={{
+                fontFamily: 'var(--font-main)',
+                fontSize: '11px',
+                color: 'var(--cyan-accent)',
                 letterSpacing: '1px',
-                transition: 'all 0.3s ease',
-              }}
-              onMouseEnter={e => {
-                e.target.style.background = 'rgba(239, 68, 68, 0.15)'
-                e.target.style.boxShadow = '0 0 15px rgba(239, 68, 68, 0.4)'
-              }}
-              onMouseLeave={e => {
-                e.target.style.background = 'transparent'
-                e.target.style.boxShadow = 'none'
-              }}
-            >
-              LOGOUT
-            </motion.button>
-          </>
-        ) : (
-          <>
-            <NavLink to="/login" current={location.pathname}>LOGIN</NavLink>
-            <Link to="/signup" style={{ textDecoration: 'none' }}>
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: '120px',
+              }}>
+                👾 {user.name.toUpperCase()}
+              </span>
+
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="btn-primary"
-                style={{ fontSize: '8px', padding: '10px 20px' }}
+                onClick={handleLogout}
+                style={{
+                  background: 'transparent',
+                  border: '1px solid var(--red-wrong)',
+                  color: 'var(--red-wrong)',
+                  padding: '8px 16px',
+                  fontFamily: 'var(--font-game)',
+                  fontSize: '7px',
+                  cursor: 'pointer',
+                  borderRadius: '6px',
+                  letterSpacing: '1px',
+                  whiteSpace: 'nowrap',
+                }}
               >
-                SIGN UP
+                LOGOUT
               </motion.button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/login" current={location.pathname}>LOGIN</NavLink>
+              <Link to="/signup" style={{ textDecoration: 'none' }}>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="btn-primary"
+                  style={{ fontSize: '7px', padding: '10px 18px' }}
+                >
+                  SIGN UP
+                </motion.button>
+              </Link>
+            </>
+          )}
+        </div>
+
+        {/* HAMBURGER — Mobile only */}
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="hamburger-btn"
+          style={{
+            background: 'transparent',
+            border: '1px solid rgba(124,58,237,0.5)',
+            borderRadius: '8px',
+            padding: '8px 10px',
+            cursor: 'pointer',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '5px',
+          }}
+        >
+          {[0, 1, 2].map(i => (
+            <motion.div
+              key={i}
+              animate={menuOpen ? {
+                rotate: i === 0 ? 45 : i === 2 ? -45 : 0,
+                y: i === 0 ? 10 : i === 2 ? -10 : 0,
+                opacity: i === 1 ? 0 : 1,
+              } : { rotate: 0, y: 0, opacity: 1 }}
+              style={{
+                width: '22px',
+                height: '2px',
+                background: 'var(--purple-secondary)',
+                borderRadius: '2px',
+              }}
+            />
+          ))}
+        </motion.button>
+      </motion.nav>
+
+      {/* MOBILE DROPDOWN MENU */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, height: 0 }}
+            animate={{ opacity: 1, y: 0, height: 'auto' }}
+            exit={{ opacity: 0, y: -20, height: 0 }}
+            transition={{ duration: 0.3 }}
+            style={{
+              position: 'fixed',
+              top: '58px',
+              left: 0, right: 0,
+              zIndex: 999,
+              background: 'rgba(10, 10, 15, 0.98)',
+              backdropFilter: 'blur(20px)',
+              borderBottom: '1px solid rgba(124,58,237,0.3)',
+              padding: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+            }}
+          >
+            {/* Player name */}
+            {user && (
+              <div style={{
+                fontFamily: 'var(--font-game)',
+                fontSize: '9px',
+                color: 'var(--cyan-accent)',
+                letterSpacing: '2px',
+                padding: '12px 16px',
+                background: 'rgba(6,182,212,0.1)',
+                borderRadius: '8px',
+                border: '1px solid rgba(6,182,212,0.2)',
+              }}>
+                👾 {user.name.toUpperCase()}
+              </div>
+            )}
+
+            {/* Leaderboard link */}
+            <Link
+              to="/leaderboard"
+              style={{ textDecoration: 'none' }}
+              onClick={() => setMenuOpen(false)}
+            >
+              <motion.div
+                whileTap={{ scale: 0.98 }}
+                style={{
+                  fontFamily: 'var(--font-game)',
+                  fontSize: '9px',
+                  color: location.pathname === '/leaderboard'
+                    ? 'var(--purple-secondary)'
+                    : 'var(--text-secondary)',
+                  letterSpacing: '2px',
+                  padding: '14px 16px',
+                  background: 'var(--bg-card)',
+                  borderRadius: '8px',
+                  border: '1px solid var(--border-color)',
+                }}
+              >
+                🏆 LEADERBOARD
+              </motion.div>
             </Link>
-          </>
+
+            {user ? (
+              <>
+                {/* Home */}
+                <Link
+                  to="/"
+                  style={{ textDecoration: 'none' }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <motion.div
+                    whileTap={{ scale: 0.98 }}
+                    style={{
+                      fontFamily: 'var(--font-game)',
+                      fontSize: '9px',
+                      color: 'var(--text-secondary)',
+                      letterSpacing: '2px',
+                      padding: '14px 16px',
+                      background: 'var(--bg-card)',
+                      borderRadius: '8px',
+                      border: '1px solid var(--border-color)',
+                    }}
+                  >
+                    🏠 HOME
+                  </motion.div>
+                </Link>
+
+                {/* Logout */}
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleLogout}
+                  style={{
+                    background: 'rgba(239,68,68,0.1)',
+                    border: '1px solid rgba(239,68,68,0.4)',
+                    borderRadius: '8px',
+                    padding: '14px 16px',
+                    fontFamily: 'var(--font-game)',
+                    fontSize: '9px',
+                    color: 'var(--red-wrong)',
+                    cursor: 'pointer',
+                    letterSpacing: '2px',
+                    textAlign: 'left',
+                    width: '100%',
+                  }}
+                >
+                  🚪 LOGOUT
+                </motion.button>
+              </>
+            ) : (
+              <>
+                {/* Login */}
+                <Link
+                  to="/login"
+                  style={{ textDecoration: 'none' }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <motion.div
+                    whileTap={{ scale: 0.98 }}
+                    style={{
+                      fontFamily: 'var(--font-game)',
+                      fontSize: '9px',
+                      color: 'var(--text-secondary)',
+                      letterSpacing: '2px',
+                      padding: '14px 16px',
+                      background: 'var(--bg-card)',
+                      borderRadius: '8px',
+                      border: '1px solid var(--border-color)',
+                    }}
+                  >
+                    🔐 LOGIN
+                  </motion.div>
+                </Link>
+
+                {/* Signup */}
+                <Link
+                  to="/signup"
+                  style={{ textDecoration: 'none' }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <motion.div
+                    whileTap={{ scale: 0.98 }}
+                    style={{
+                      fontFamily: 'var(--font-game)',
+                      fontSize: '9px',
+                      color: 'white',
+                      letterSpacing: '2px',
+                      padding: '14px 16px',
+                      background: 'linear-gradient(135deg, #7c3aed, #2563eb)',
+                      borderRadius: '8px',
+                      textAlign: 'center',
+                      boxShadow: '0 0 15px rgba(124,58,237,0.4)',
+                    }}
+                  >
+                    👾 SIGN UP
+                  </motion.div>
+                </Link>
+              </>
+            )}
+          </motion.div>
         )}
-      </div>
-    </motion.nav>
+      </AnimatePresence>
+    </>
   )
 }
 
-// Helper component
 const NavLink = ({ to, current, children }) => (
   <Link to={to} style={{ textDecoration: 'none' }}>
     <motion.span
       whileHover={{ scale: 1.1 }}
       style={{
         fontFamily: 'var(--font-game)',
-        fontSize: '9px',
+        fontSize: '8px',
         color: current === to ? 'var(--purple-secondary)' : 'var(--text-secondary)',
         letterSpacing: '1px',
         cursor: 'pointer',
-        transition: 'color 0.3s ease',
+        whiteSpace: 'nowrap',
         textShadow: current === to ? '0 0 10px var(--purple-secondary)' : 'none',
       }}
     >
