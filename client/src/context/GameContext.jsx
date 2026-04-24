@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState } from 'react';
 
 const GameContext = createContext();
@@ -9,6 +8,9 @@ export const GameProvider = ({ children }) => {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem('user')) || null
   );
+
+  // ---- GUEST STATE ----
+  const [isGuest, setIsGuest] = useState(false);
 
   // ---- GAME STATE ----
   const [difficulty, setDifficulty] = useState('easy');
@@ -21,11 +23,19 @@ export const GameProvider = ({ children }) => {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
     setUser(userData);
+    setIsGuest(false); // Guest mode off
   };
 
   const logoutUser = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    setUser(null);
+    setIsGuest(false); // Guest mode off
+  };
+
+  // ---- GUEST FUNCTION ----
+  const loginAsGuest = () => {
+    setIsGuest(true);
     setUser(null);
   };
 
@@ -40,6 +50,8 @@ export const GameProvider = ({ children }) => {
     <GameContext.Provider value={{
       // Auth
       user, loginUser, logoutUser,
+      // Guest
+      isGuest, loginAsGuest,
       // Game
       difficulty, setDifficulty,
       gameResult, setGameResult,

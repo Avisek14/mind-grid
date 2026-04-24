@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
@@ -9,7 +8,7 @@ const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { loginUser } = useGame()
+  const { loginUser, loginAsGuest } = useGame()
   const navigate = useNavigate()
 
   const handleChange = (e) => {
@@ -31,9 +30,14 @@ const Login = () => {
     }
   }
 
+  // ✅ Guest login handler
+  const handleGuestLogin = () => {
+    loginAsGuest()
+    navigate('/')
+  }
+
   return (
     <div className="page-wrapper">
-      {/* Floating particles background */}
       <FloatingParticles />
 
       <motion.div
@@ -172,10 +176,59 @@ const Login = () => {
             </motion.button>
           </form>
 
+          {/* Divider */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            margin: '24px 0',
+          }}>
+            <div style={{ flex: 1, height: '1px', background: 'rgba(124,58,237,0.2)' }} />
+            <span style={{
+              fontFamily: 'var(--font-game)',
+              fontSize: '7px',
+              color: 'var(--text-muted)',
+              letterSpacing: '2px',
+            }}>OR</span>
+            <div style={{ flex: 1, height: '1px', background: 'rgba(124,58,237,0.2)' }} />
+          </div>
+
+          {/* ✅ Play as Guest Button */}
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleGuestLogin}
+            style={{
+              width: '100%',
+              padding: '14px',
+              background: 'transparent',
+              border: '1px solid rgba(124,58,237,0.4)',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              fontFamily: 'var(--font-game)',
+              fontSize: '10px',
+              color: 'var(--cyan-accent)',
+              letterSpacing: '2px',
+            }}
+          >
+            👻 PLAY AS GUEST
+          </motion.button>
+
+          <p style={{
+            textAlign: 'center',
+            marginTop: '8px',
+            fontFamily: 'var(--font-game)',
+            fontSize: '7px',
+            color: 'var(--text-muted)',
+            letterSpacing: '1px',
+          }}>
+            SCORES WON'T BE SAVED IN GUEST MODE
+          </p>
+
           {/* Signup link */}
           <p style={{
             textAlign: 'center',
-            marginTop: '24px',
+            marginTop: '20px',
             fontFamily: 'var(--font-game)',
             fontSize: '8px',
             color: 'var(--text-secondary)',
@@ -195,7 +248,6 @@ const Login = () => {
   )
 }
 
-// Floating particles background effect
 const FloatingParticles = () => (
   <div style={{
     position: 'fixed',
