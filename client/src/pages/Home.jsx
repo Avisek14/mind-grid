@@ -1,4 +1,3 @@
-
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
@@ -38,12 +37,14 @@ const difficulties = [
 ]
 
 const Home = () => {
-  const { user, difficulty, setDifficulty, resetGame } = useGame()
+  // ✅ Change 1 — isGuest add kiya
+  const { user, difficulty, setDifficulty, resetGame, isGuest } = useGame()
   const navigate = useNavigate()
   const [hovered, setHovered] = useState(null)
 
+  // ✅ Change 2 — isGuest check add kiya
   const handleStartGame = () => {
-    if (!user) {
+    if (!user && !isGuest) {
       navigate('/login')
       return
     }
@@ -63,10 +64,7 @@ const Home = () => {
       overflow: 'hidden',
     }}>
 
-      {/* Animated background grid */}
       <BackgroundGrid />
-
-      {/* Floating particles */}
       <FloatingParticles />
 
       {/* ===== HERO TITLE ===== */}
@@ -76,7 +74,6 @@ const Home = () => {
         transition={{ duration: 0.8, ease: 'easeOut' }}
         style={{ textAlign: 'center', marginBottom: '16px', position: 'relative', zIndex: 1 }}
       >
-        {/* Glowing title */}
         <motion.h1
           animate={{
             textShadow: [
@@ -100,7 +97,6 @@ const Home = () => {
           🧠 MINDGRID
         </motion.h1>
 
-        {/* Subtitle */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -116,7 +112,6 @@ const Home = () => {
           MEMORY & LOGIC CHALLENGE
         </motion.p>
 
-        {/* Animated underline */}
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
@@ -229,7 +224,6 @@ const Home = () => {
                 overflow: 'hidden',
               }}
             >
-              {/* Selected indicator */}
               {difficulty === diff.id && (
                 <motion.div
                   initial={{ scale: 0 }}
@@ -310,7 +304,6 @@ const Home = () => {
               overflow: 'hidden',
             }}
           >
-            {/* Shimmer effect */}
             <motion.div
               animate={{ x: ['-100%', '200%'] }}
               transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
@@ -322,11 +315,12 @@ const Home = () => {
                 transform: 'skewX(-20deg)',
               }}
             />
-            {user ? '🎮 START GAME' : '🔐 LOGIN TO PLAY'}
+            {/* ✅ Change 3 — isGuest check add kiya */}
+            {user || isGuest ? '🎮 START GAME' : '🔐 LOGIN TO PLAY'}
           </motion.button>
 
-          {/* Guest hint */}
-          {!user && (
+          {/* ✅ Change 4 — isGuest check add kiya */}
+          {!user && !isGuest && (
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -340,6 +334,24 @@ const Home = () => {
               }}
             >
               LOGIN REQUIRED TO SAVE YOUR SCORES
+            </motion.p>
+          )}
+
+          {/* Guest mode badge */}
+          {isGuest && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.3 }}
+              style={{
+                fontFamily: 'var(--font-game)',
+                fontSize: '7px',
+                color: 'var(--cyan-accent)',
+                marginTop: '16px',
+                letterSpacing: '1px',
+              }}
+            >
+              👻 GUEST MODE — SCORES WON'T BE SAVED
             </motion.p>
           )}
         </motion.div>
@@ -395,7 +407,6 @@ const Home = () => {
   )
 }
 
-// ===== BACKGROUND GRID =====
 const BackgroundGrid = () => (
   <div style={{
     position: 'fixed',
@@ -411,7 +422,6 @@ const BackgroundGrid = () => (
   }} />
 )
 
-// ===== FLOATING PARTICLES =====
 const FloatingParticles = () => (
   <div style={{
     position: 'fixed',
