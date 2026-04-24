@@ -34,8 +34,9 @@ export const GameProvider = ({ children }) => {
   };
 
   // ---- GUEST FUNCTION ----
-  const loginAsGuest = () => {
-    setIsGuest(true);
+  // ✅ Fix — value parameter add kiya, default true
+  const loginAsGuest = (value = true) => {
+    setIsGuest(value);
     setUser(null);
   };
 
