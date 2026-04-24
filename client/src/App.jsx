@@ -1,4 +1,3 @@
-
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { GameProvider, useGame } from './context/GameContext';
 import Navbar from './components/Navbar';
@@ -10,10 +9,10 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import './App.css';
 
-// Protected Route — Login nahi hai toh Login page pe bhejo
+// Protected Route — ✅ isGuest bhi check karo
 const ProtectedRoute = ({ children }) => {
-  const { user } = useGame();
-  return user ? children : <Navigate to="/login" />;
+  const { user, isGuest } = useGame();
+  return (user || isGuest) ? children : <Navigate to="/login" />;
 };
 
 function AppRoutes() {
