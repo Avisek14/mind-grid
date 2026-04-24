@@ -1,11 +1,10 @@
-
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useGame } from '../context/GameContext'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const Navbar = () => {
-  const { user, logoutUser } = useGame()
+  const { user, logoutUser, isGuest, loginAsGuest } = useGame()
   const navigate = useNavigate()
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -13,6 +12,13 @@ const Navbar = () => {
   const handleLogout = () => {
     logoutUser()
     navigate('/')
+    setMenuOpen(false)
+  }
+
+  // ✅ Guest exit — wapas login pe
+  const handleGuestExit = () => {
+    loginAsGuest(false)
+    navigate('/login')
     setMenuOpen(false)
   }
 
@@ -52,14 +58,8 @@ const Navbar = () => {
           </motion.div>
         </Link>
 
-        {/* DESKTOP LINKS — 768px se upar dikhega */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '28px',
-        }}
-          className="desktop-nav"
-        >
+        {/* DESKTOP LINKS */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }} className="desktop-nav">
           <NavLink to="/leaderboard" current={location.pathname}>
             🏆 LEADERBOARD
           </NavLink>
@@ -97,6 +97,43 @@ const Navbar = () => {
                 }}
               >
                 LOGOUT
+              </motion.button>
+            </>
+          ) : isGuest ? (
+            // ✅ Guest badge — desktop
+            <>
+              <span style={{
+                fontFamily: 'var(--font-game)',
+                fontSize: '9px',
+                color: 'var(--cyan-accent)',
+                letterSpacing: '1px',
+                background: 'rgba(6,182,212,0.1)',
+                border: '1px solid rgba(6,182,212,0.3)',
+                padding: '6px 12px',
+                borderRadius: '20px',
+                whiteSpace: 'nowrap',
+              }}>
+                👻 GUEST
+              </span>
+
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleGuestExit}
+                style={{
+                  background: 'transparent',
+                  border: '1px solid var(--purple-secondary)',
+                  color: 'var(--purple-secondary)',
+                  padding: '8px 16px',
+                  fontFamily: 'var(--font-game)',
+                  fontSize: '7px',
+                  cursor: 'pointer',
+                  borderRadius: '6px',
+                  letterSpacing: '1px',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                LOGIN
               </motion.button>
             </>
           ) : (
@@ -173,7 +210,22 @@ const Navbar = () => {
               gap: '16px',
             }}
           >
-            {/* Player name */}
+            {/* ✅ Guest badge — mobile */}
+            {isGuest && (
+              <div style={{
+                fontFamily: 'var(--font-game)',
+                fontSize: '9px',
+                color: 'var(--cyan-accent)',
+                letterSpacing: '2px',
+                padding: '12px 16px',
+                background: 'rgba(6,182,212,0.1)',
+                borderRadius: '8px',
+                border: '1px solid rgba(6,182,212,0.2)',
+              }}>
+                👻 GUEST MODE
+              </div>
+            )}
+
             {user && (
               <div style={{
                 fontFamily: 'var(--font-game)',
@@ -189,20 +241,13 @@ const Navbar = () => {
               </div>
             )}
 
-            {/* Leaderboard link */}
-            <Link
-              to="/leaderboard"
-              style={{ textDecoration: 'none' }}
-              onClick={() => setMenuOpen(false)}
-            >
+            <Link to="/leaderboard" style={{ textDecoration: 'none' }} onClick={() => setMenuOpen(false)}>
               <motion.div
                 whileTap={{ scale: 0.98 }}
                 style={{
                   fontFamily: 'var(--font-game)',
                   fontSize: '9px',
-                  color: location.pathname === '/leaderboard'
-                    ? 'var(--purple-secondary)'
-                    : 'var(--text-secondary)',
+                  color: location.pathname === '/leaderboard' ? 'var(--purple-secondary)' : 'var(--text-secondary)',
                   letterSpacing: '2px',
                   padding: '14px 16px',
                   background: 'var(--bg-card)',
@@ -216,95 +261,57 @@ const Navbar = () => {
 
             {user ? (
               <>
-                {/* Home */}
-                <Link
-                  to="/"
-                  style={{ textDecoration: 'none' }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <motion.div
-                    whileTap={{ scale: 0.98 }}
-                    style={{
-                      fontFamily: 'var(--font-game)',
-                      fontSize: '9px',
-                      color: 'var(--text-secondary)',
-                      letterSpacing: '2px',
-                      padding: '14px 16px',
-                      background: 'var(--bg-card)',
-                      borderRadius: '8px',
-                      border: '1px solid var(--border-color)',
-                    }}
-                  >
+                <Link to="/" style={{ textDecoration: 'none' }} onClick={() => setMenuOpen(false)}>
+                  <motion.div whileTap={{ scale: 0.98 }} style={{
+                    fontFamily: 'var(--font-game)', fontSize: '9px',
+                    color: 'var(--text-secondary)', letterSpacing: '2px',
+                    padding: '14px 16px', background: 'var(--bg-card)',
+                    borderRadius: '8px', border: '1px solid var(--border-color)',
+                  }}>
                     🏠 HOME
                   </motion.div>
                 </Link>
 
-                {/* Logout */}
-                <motion.button
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleLogout}
-                  style={{
-                    background: 'rgba(239,68,68,0.1)',
-                    border: '1px solid rgba(239,68,68,0.4)',
-                    borderRadius: '8px',
-                    padding: '14px 16px',
-                    fontFamily: 'var(--font-game)',
-                    fontSize: '9px',
-                    color: 'var(--red-wrong)',
-                    cursor: 'pointer',
-                    letterSpacing: '2px',
-                    textAlign: 'left',
-                    width: '100%',
-                  }}
-                >
+                <motion.button whileTap={{ scale: 0.98 }} onClick={handleLogout} style={{
+                  background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.4)',
+                  borderRadius: '8px', padding: '14px 16px', fontFamily: 'var(--font-game)',
+                  fontSize: '9px', color: 'var(--red-wrong)', cursor: 'pointer',
+                  letterSpacing: '2px', textAlign: 'left', width: '100%',
+                }}>
                   🚪 LOGOUT
                 </motion.button>
               </>
+            ) : isGuest ? (
+              // ✅ Guest mobile — Login button
+              <motion.button whileTap={{ scale: 0.98 }} onClick={handleGuestExit} style={{
+                background: 'linear-gradient(135deg, #7c3aed, #2563eb)', border: 'none',
+                borderRadius: '8px', padding: '14px 16px', fontFamily: 'var(--font-game)',
+                fontSize: '9px', color: 'white', cursor: 'pointer',
+                letterSpacing: '2px', textAlign: 'center', width: '100%',
+              }}>
+                🔐 LOGIN / SIGN UP
+              </motion.button>
             ) : (
               <>
-                {/* Login */}
-                <Link
-                  to="/login"
-                  style={{ textDecoration: 'none' }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <motion.div
-                    whileTap={{ scale: 0.98 }}
-                    style={{
-                      fontFamily: 'var(--font-game)',
-                      fontSize: '9px',
-                      color: 'var(--text-secondary)',
-                      letterSpacing: '2px',
-                      padding: '14px 16px',
-                      background: 'var(--bg-card)',
-                      borderRadius: '8px',
-                      border: '1px solid var(--border-color)',
-                    }}
-                  >
+                <Link to="/login" style={{ textDecoration: 'none' }} onClick={() => setMenuOpen(false)}>
+                  <motion.div whileTap={{ scale: 0.98 }} style={{
+                    fontFamily: 'var(--font-game)', fontSize: '9px',
+                    color: 'var(--text-secondary)', letterSpacing: '2px',
+                    padding: '14px 16px', background: 'var(--bg-card)',
+                    borderRadius: '8px', border: '1px solid var(--border-color)',
+                  }}>
                     🔐 LOGIN
                   </motion.div>
                 </Link>
 
-                {/* Signup */}
-                <Link
-                  to="/signup"
-                  style={{ textDecoration: 'none' }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <motion.div
-                    whileTap={{ scale: 0.98 }}
-                    style={{
-                      fontFamily: 'var(--font-game)',
-                      fontSize: '9px',
-                      color: 'white',
-                      letterSpacing: '2px',
-                      padding: '14px 16px',
-                      background: 'linear-gradient(135deg, #7c3aed, #2563eb)',
-                      borderRadius: '8px',
-                      textAlign: 'center',
-                      boxShadow: '0 0 15px rgba(124,58,237,0.4)',
-                    }}
-                  >
+                <Link to="/signup" style={{ textDecoration: 'none' }} onClick={() => setMenuOpen(false)}>
+                  <motion.div whileTap={{ scale: 0.98 }} style={{
+                    fontFamily: 'var(--font-game)', fontSize: '9px', color: 'white',
+                    letterSpacing: '2px', padding: '14px 16px',
+                    background: 'linear-gradient(135deg, #7c3aed, #2563eb)',
+                    borderRadius: '8px', textAlign: 'center',
+                    boxShadow: '0 0 15px rgba(124,58,237,0.4)',
+                  }}>
                     👾 SIGN UP
                   </motion.div>
                 </Link>

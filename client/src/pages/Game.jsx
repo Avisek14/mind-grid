@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -14,8 +13,6 @@ const DIFFICULTY_TIME = { easy: 5, moderate: 3, hard: 1 }
 // 16 tiles generate karo — 10 numbers + 6 empty
 const generateTiles = () => {
   const positions = Array(16).fill(null).map((_, i) => i)
-
-  // 10 random positions choose karo numbers ke liye
   const shuffled = positions.sort(() => Math.random() - 0.5)
   const numberPositions = shuffled.slice(0, 10)
 
@@ -26,7 +23,6 @@ const generateTiles = () => {
     return { number: null, isEmpty: true }
   })
 
-  // 1-10 numbers randomly assign karo
   const numbers = [1,2,3,4,5,6,7,8,9,10].sort(() => Math.random() - 0.5)
   let numIdx = 0
   tiles.forEach(tile => {
@@ -39,7 +35,8 @@ const generateTiles = () => {
 }
 
 const Game = () => {
-  const { difficulty, setGameResult, setTimeTaken, setSelectedOrder } = useGame()
+  // ✅ isGuest add kiya
+  const { difficulty, setGameResult, setTimeTaken, setSelectedOrder, isGuest } = useGame()
   const navigate = useNavigate()
 
   const [tiles, setTiles] = useState([])
@@ -57,7 +54,6 @@ const Game = () => {
   const gameTimerRef = useRef(null)
   const visibilityTime = DIFFICULTY_TIME[difficulty]
 
-  // Game initialize karo
   useEffect(() => {
     setTiles(generateTiles())
     setPhase('memorize')
@@ -70,7 +66,6 @@ const Game = () => {
     setGameTime(0)
   }, [])
 
-  // Game timer — playing phase mein start hoga
   useEffect(() => {
     if (phase === 'playing') {
       gameTimerRef.current = setInterval(() => {
@@ -80,36 +75,30 @@ const Game = () => {
     return () => clearInterval(gameTimerRef.current)
   }, [phase])
 
-  // Visibility timer khatam — numbers hide ho jayenge
   const handleVisibilityEnd = useCallback(() => {
     setPhase('hidden')
   }, [])
 
-  // Pehla click — popup dikhao
   const handleFirstClick = (index) => {
     if (tiles[index].isEmpty) return
     setFirstClickIndex(index)
     setShowPopup(true)
   }
 
-  // Order select kiya
   const handleOrderSelect = (selectedOrder) => {
     setShowPopup(false)
     setOrder(selectedOrder)
     setSelectedOrder(selectedOrder)
     setPhase('playing')
 
-    // Expected first number set karo
     const firstNum = selectedOrder === 'ascending' ? 1 : 10
     setNextExpected(firstNum)
 
-    // Pehle click ka tile bhi check karo
     setTimeout(() => {
       checkTileClick(firstClickIndex, selectedOrder, firstNum, false)
     }, 100)
   }
 
-  // Tile click check karo
   const checkTileClick = (index, currentOrder, expected, warned) => {
     const tile = tiles[index]
     if (!tile || tile.isEmpty) return
@@ -117,25 +106,20 @@ const Game = () => {
     const clickedNum = tile.number
 
     if (clickedNum === expected) {
-      // ✅ Correct!
       setRevealedTiles(prev => {
         const newRevealed = [...prev, index]
-
-        // Sab 10 tiles click ho gaye?
         if (newRevealed.length === 10) {
           clearInterval(gameTimerRef.current)
-          setTimeout(() => handleWin(newRevealed, currentOrder), 200) // ✅ Fix 4: 500 → 200
+          setTimeout(() => handleWin(newRevealed, currentOrder), 200)
         }
         return newRevealed
       })
 
-      // Next expected number set karo
       const nextNum = currentOrder === 'ascending' ? expected + 1 : expected - 1
       setNextExpected(nextNum)
       setWarningMsg('')
 
     } else {
-      // ❌ Wrong!
       if (!warned) {
         const startNum = currentOrder === 'ascending' ? 1 : 10
         if (clickedNum !== startNum && !warned) {
@@ -149,14 +133,12 @@ const Game = () => {
         }
       }
 
-      // Game over!
       setWrongTile(index)
       clearInterval(gameTimerRef.current)
-      setTimeout(() => handleGameOver(index, currentOrder), 400) // ✅ Fix 1: 800 → 400
+      setTimeout(() => handleGameOver(index, currentOrder), 400)
     }
   }
 
-  // Playing phase mein tile click
   const handlePlayingClick = (index) => {
     const tile = tiles[index]
     if (!tile || tile.isEmpty) return
@@ -165,14 +147,13 @@ const Game = () => {
     const clickedNum = tile.number
 
     if (clickedNum === nextExpected) {
-      // ✅ Correct!
       const newRevealed = [...revealedTiles, index]
       setRevealedTiles(newRevealed)
       setWarningMsg('')
 
       if (newRevealed.length === 10) {
         clearInterval(gameTimerRef.current)
-        setTimeout(() => handleWin(newRevealed, order), 200) // ✅ Fix 4: 500 → 200
+        setTimeout(() => handleWin(newRevealed, order), 200)
         return
       }
 
@@ -180,20 +161,17 @@ const Game = () => {
       setNextExpected(nextNum)
 
     } else {
-      // ❌ Wrong!
       if (!hasWarned) {
         setWarningMsg(`⚠️ WRONG! Expected ${nextExpected}`)
         setHasWarned(true)
         return
       }
-      // Dusri galti — Game Over
       setWrongTile(index)
       clearInterval(gameTimerRef.current)
-      setTimeout(() => handleGameOver(index, order), 400) // ✅ Fix 1: 800 → 400
+      setTimeout(() => handleGameOver(index, order), 400)
     }
   }
 
-  // Main tile click handler
   const handleTileClick = (index) => {
     if (phase === 'memorize') return
     if (phase === 'gameover' || phase === 'won') return
@@ -209,47 +187,50 @@ const Game = () => {
     }
   }
 
-  // Win handler
+  // Win handler — ✅ Guest mein score save nahi hoga
   const handleWin = async (revealed, currentOrder) => {
     setPhase('won')
     setGameResult('win')
     setTimeTaken(gameTime)
 
-    try {
-      await saveScoreAPI({
-        difficulty,
-        timeTaken: gameTime,
-        result: 'win',
-        order: currentOrder,
-      })
-    } catch (e) {
-      console.log('Score save error:', e)
+    if (!isGuest) {
+      try {
+        await saveScoreAPI({
+          difficulty,
+          timeTaken: gameTime,
+          result: 'win',
+          order: currentOrder,
+        })
+      } catch (e) {
+        console.log('Score save error:', e)
+      }
     }
 
-    setTimeout(() => navigate('/result'), 300) // ✅ Fix 3: 1000 → 300
+    setTimeout(() => navigate('/result'), 300)
   }
 
-  // Game Over handler
+  // Game Over handler — ✅ Guest mein score save nahi hoga
   const handleGameOver = async (wrongIdx, currentOrder) => {
     setPhase('gameover')
     setGameResult('lose')
     setTimeTaken(gameTime)
 
-    try {
-      await saveScoreAPI({
-        difficulty,
-        timeTaken: gameTime,
-        result: 'lose',
-        order: currentOrder || 'ascending',
-      })
-    } catch (e) {
-      console.log('Score save error:', e)
+    if (!isGuest) {
+      try {
+        await saveScoreAPI({
+          difficulty,
+          timeTaken: gameTime,
+          result: 'lose',
+          order: currentOrder || 'ascending',
+        })
+      } catch (e) {
+        console.log('Score save error:', e)
+      }
     }
 
-    setTimeout(() => navigate('/result'), 300) // ✅ Fix 2: 1500 → 300
+    setTimeout(() => navigate('/result'), 300)
   }
 
-  // Phase label
   const getPhaseLabel = () => {
     if (phase === 'memorize') return '👁️ MEMORIZE THE GRID!'
     if (phase === 'hidden') return '🎯 CLICK ANY NUMBER TO START'
@@ -281,7 +262,6 @@ const Game = () => {
       position: 'relative',
     }}>
 
-      {/* Background grid */}
       <div style={{
         position: 'fixed',
         top: 0, left: 0,
@@ -297,7 +277,6 @@ const Game = () => {
 
       <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '560px' }}>
 
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -322,7 +301,28 @@ const Game = () => {
             </span>
           </div>
 
-          {/* Phase label */}
+          {/* ✅ Guest badge */}
+          {isGuest && (
+            <div style={{
+              display: 'inline-block',
+              marginLeft: '8px',
+              background: 'rgba(6,182,212,0.1)',
+              border: '1px solid rgba(6,182,212,0.3)',
+              borderRadius: '20px',
+              padding: '6px 14px',
+              marginBottom: '16px',
+            }}>
+              <span style={{
+                fontFamily: 'var(--font-game)',
+                fontSize: '8px',
+                color: 'var(--cyan-accent)',
+                letterSpacing: '2px',
+              }}>
+                👻 GUEST
+              </span>
+            </div>
+          )}
+
           <motion.p
             key={phase}
             initial={{ opacity: 0, y: -10 }}
@@ -339,7 +339,6 @@ const Game = () => {
           </motion.p>
         </motion.div>
 
-        {/* Visibility Timer */}
         {phase === 'memorize' && (
           <Timer
             duration={visibilityTime}
@@ -348,7 +347,6 @@ const Game = () => {
           />
         )}
 
-        {/* Game Timer — playing phase */}
         {(phase === 'playing' || phase === 'won' || phase === 'gameover') && (
           <div style={{ textAlign: 'center', marginBottom: '16px' }}>
             <span style={{
@@ -362,7 +360,6 @@ const Game = () => {
           </div>
         )}
 
-        {/* Warning message */}
         <AnimatePresence>
           {warningMsg && (
             <motion.div
@@ -387,35 +384,17 @@ const Game = () => {
           )}
         </AnimatePresence>
 
-        {/* Progress bar */}
         {phase === 'playing' && (
           <div style={{ marginBottom: '16px' }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              marginBottom: '6px',
-            }}>
-              <span style={{
-                fontFamily: 'var(--font-game)',
-                fontSize: '7px',
-                color: 'var(--text-muted)',
-              }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+              <span style={{ fontFamily: 'var(--font-game)', fontSize: '7px', color: 'var(--text-muted)' }}>
                 PROGRESS
               </span>
-              <span style={{
-                fontFamily: 'var(--font-game)',
-                fontSize: '7px',
-                color: 'var(--purple-secondary)',
-              }}>
+              <span style={{ fontFamily: 'var(--font-game)', fontSize: '7px', color: 'var(--purple-secondary)' }}>
                 {revealedTiles.length}/10
               </span>
             </div>
-            <div style={{
-              height: '6px',
-              background: 'var(--bg-secondary)',
-              borderRadius: '3px',
-              overflow: 'hidden',
-            }}>
+            <div style={{ height: '6px', background: 'var(--bg-secondary)', borderRadius: '3px', overflow: 'hidden' }}>
               <motion.div
                 animate={{ width: `${(revealedTiles.length / 10) * 100}%` }}
                 style={{
@@ -429,7 +408,6 @@ const Game = () => {
           </div>
         )}
 
-        {/* GAME GRID */}
         {tiles.length > 0 && (
           <Grid
             tiles={tiles}
@@ -441,7 +419,6 @@ const Game = () => {
           />
         )}
 
-        {/* Bottom info */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -459,7 +436,6 @@ const Game = () => {
         </motion.div>
       </div>
 
-      {/* ASC/DESC Popup */}
       <Popup isOpen={showPopup} onSelect={handleOrderSelect} />
     </div>
   )

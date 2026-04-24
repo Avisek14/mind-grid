@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
@@ -6,7 +5,8 @@ import { useGame } from '../context/GameContext'
 import { getHistoryAPI } from '../services/api'
 
 const Result = () => {
-  const { gameResult, timeTaken, difficulty, selectedOrder, resetGame, user } = useGame()
+  // ✅ isGuest add kiya — baaki sab same
+  const { gameResult, timeTaken, difficulty, selectedOrder, resetGame, user, isGuest } = useGame()
   const navigate = useNavigate()
   const [lastGame, setLastGame] = useState(null)
 
@@ -20,6 +20,8 @@ const Result = () => {
   }, [])
 
   const fetchLastGame = async () => {
+    // ✅ Guest ka history fetch nahi hoga
+    if (isGuest) return
     try {
       const res = await getHistoryAPI()
       if (res.data.scores.length > 0) {
@@ -242,8 +244,12 @@ const Result = () => {
                 lineHeight: 1.8,
               }}
             >
-              🎯 SCORE SAVED TO LEADERBOARD!<br />
-              CAN YOU DO IT FASTER? 🚀
+              {/* ✅ Guest ke liye NOT SAVED message */}
+              {isGuest ? (
+                <>👻 GUEST MODE — SCORE NOT SAVED!<br />CREATE AN ACCOUNT TO SAVE SCORES! 🎯</>
+              ) : (
+                <>🎯 SCORE SAVED TO LEADERBOARD!<br />CAN YOU DO IT FASTER? 🚀</>
+              )}
             </motion.div>
           )}
 
@@ -267,8 +273,12 @@ const Result = () => {
                 lineHeight: 1.8,
               }}
             >
-              💡 TIP: FOCUS ON NUMBER POSITIONS<br />
-              BEFORE THE TIMER RUNS OUT! 🧠
+              {/* ✅ Guest ke liye NOT SAVED message */}
+              {isGuest ? (
+                <>👻 GUEST MODE — SCORE NOT SAVED!<br />CREATE AN ACCOUNT TO SAVE SCORES! 🎯</>
+              ) : (
+                <>💡 TIP: FOCUS ON NUMBER POSITIONS<br />BEFORE THE TIMER RUNS OUT! 🧠</>
+              )}
             </motion.div>
           )}
         </motion.div>
