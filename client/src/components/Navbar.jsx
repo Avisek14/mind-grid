@@ -66,6 +66,12 @@ const Navbar = () => {
 
         {/* DESKTOP LINKS */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }} className="desktop-nav">
+
+          {/* ✅ HOME button — desktop */}
+          <NavLink to="/" current={location.pathname}>
+            🏠 HOME
+          </NavLink>
+
           <NavLink to="/leaderboard" current={location.pathname}>
             🏆 LEADERBOARD
           </NavLink>
@@ -271,6 +277,25 @@ const Navbar = () => {
               </div>
             )}
 
+            {/* ✅ HOME button — hamburger */}
+            <Link to="/" style={{ textDecoration: 'none' }} onClick={() => setMenuOpen(false)}>
+              <motion.div
+                whileTap={{ scale: 0.98 }}
+                style={{
+                  fontFamily: 'var(--font-game)',
+                  fontSize: '9px',
+                  color: location.pathname === '/' ? 'var(--purple-secondary)' : 'var(--text-secondary)',
+                  letterSpacing: '2px',
+                  padding: '14px 16px',
+                  background: 'var(--bg-card)',
+                  borderRadius: '8px',
+                  border: '1px solid var(--border-color)',
+                }}
+              >
+                🏠 HOME
+              </motion.div>
+            </Link>
+
             <Link to="/leaderboard" style={{ textDecoration: 'none' }} onClick={() => setMenuOpen(false)}>
               <motion.div
                 whileTap={{ scale: 0.98 }}
@@ -291,17 +316,6 @@ const Navbar = () => {
 
             {user ? (
               <>
-                <Link to="/" style={{ textDecoration: 'none' }} onClick={() => setMenuOpen(false)}>
-                  <motion.div whileTap={{ scale: 0.98 }} style={{
-                    fontFamily: 'var(--font-game)', fontSize: '9px',
-                    color: 'var(--text-secondary)', letterSpacing: '2px',
-                    padding: '14px 16px', background: 'var(--bg-card)',
-                    borderRadius: '8px', border: '1px solid var(--border-color)',
-                  }}>
-                    🏠 HOME
-                  </motion.div>
-                </Link>
-
                 <motion.button whileTap={{ scale: 0.98 }} onClick={handleLogout} style={{
                   background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.4)',
                   borderRadius: '8px', padding: '14px 16px', fontFamily: 'var(--font-game)',
