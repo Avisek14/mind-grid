@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useGame } from '../context/GameContext'
+import Footer from '../components/Footer'
 
 const difficulties = [
   {
@@ -451,6 +452,10 @@ const Home = () => {
           </motion.div>
         ))}
       </motion.div>
+
+      {/* ===== FOOTER ===== */}
+      <Footer />
+
     </div>
   )
 }
