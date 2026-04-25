@@ -4,7 +4,7 @@ import { useGame } from '../context/GameContext'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const Navbar = () => {
-  const { user, logoutUser, isGuest, loginAsGuest } = useGame()
+  const { user, logoutUser, isGuest, loginAsGuest, exitGuest } = useGame()
   const navigate = useNavigate()
   const location = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -15,10 +15,16 @@ const Navbar = () => {
     setMenuOpen(false)
   }
 
-  // ✅ Guest exit — wapas login pe
   const handleGuestExit = () => {
     loginAsGuest(false)
     navigate('/login')
+    setMenuOpen(false)
+  }
+
+  // ✅ NEW — Guest play handler
+  const handleGuestPlay = () => {
+    loginAsGuest()
+    navigate('/')
     setMenuOpen(false)
   }
 
@@ -100,7 +106,6 @@ const Navbar = () => {
               </motion.button>
             </>
           ) : isGuest ? (
-            // ✅ Guest badge — desktop
             <>
               <span style={{
                 fontFamily: 'var(--font-game)',
@@ -139,6 +144,31 @@ const Navbar = () => {
           ) : (
             <>
               <NavLink to="/login" current={location.pathname}>LOGIN</NavLink>
+
+              {/* ✅ NEW — Guest button desktop */}
+              <motion.button
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: '0 0 15px rgba(6,182,212,0.4)',
+                }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleGuestPlay}
+                style={{
+                  background: 'rgba(6,182,212,0.1)',
+                  border: '1px dashed rgba(6,182,212,0.5)',
+                  color: 'var(--cyan-accent)',
+                  padding: '8px 16px',
+                  fontFamily: 'var(--font-game)',
+                  fontSize: '7px',
+                  cursor: 'pointer',
+                  borderRadius: '6px',
+                  letterSpacing: '1px',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                👻 GUEST
+              </motion.button>
+
               <Link to="/signup" style={{ textDecoration: 'none' }}>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -210,7 +240,7 @@ const Navbar = () => {
               gap: '16px',
             }}
           >
-            {/* ✅ Guest badge — mobile */}
+            {/* Guest badge — mobile */}
             {isGuest && (
               <div style={{
                 fontFamily: 'var(--font-game)',
@@ -282,7 +312,6 @@ const Navbar = () => {
                 </motion.button>
               </>
             ) : isGuest ? (
-              // ✅ Guest mobile — Login button
               <motion.button whileTap={{ scale: 0.98 }} onClick={handleGuestExit} style={{
                 background: 'linear-gradient(135deg, #7c3aed, #2563eb)', border: 'none',
                 borderRadius: '8px', padding: '14px 16px', fontFamily: 'var(--font-game)',
@@ -303,6 +332,27 @@ const Navbar = () => {
                     🔐 LOGIN
                   </motion.div>
                 </Link>
+
+                {/* ✅ NEW — Guest button hamburger menu */}
+                <motion.button
+                  whileTap={{ scale: 0.98 }}
+                  onClick={handleGuestPlay}
+                  style={{
+                    background: 'rgba(6,182,212,0.1)',
+                    border: '1px dashed rgba(6,182,212,0.5)',
+                    borderRadius: '8px',
+                    padding: '14px 16px',
+                    fontFamily: 'var(--font-game)',
+                    fontSize: '9px',
+                    color: 'var(--cyan-accent)',
+                    cursor: 'pointer',
+                    letterSpacing: '2px',
+                    textAlign: 'center',
+                    width: '100%',
+                  }}
+                >
+                  👻 PLAY AS GUEST
+                </motion.button>
 
                 <Link to="/signup" style={{ textDecoration: 'none' }} onClick={() => setMenuOpen(false)}>
                   <motion.div whileTap={{ scale: 0.98 }} style={{
