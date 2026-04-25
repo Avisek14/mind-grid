@@ -38,7 +38,7 @@ const difficulties = [
 
 const Home = () => {
   // ✅ Change 1 — isGuest add kiya
-  const { user, difficulty, setDifficulty, resetGame, isGuest } = useGame()
+  const { user, difficulty, setDifficulty, resetGame, isGuest, loginAsGuest } = useGame()
   const navigate = useNavigate()
   const [hovered, setHovered] = useState(null)
 
@@ -48,6 +48,13 @@ const Home = () => {
       navigate('/login')
       return
     }
+    resetGame()
+    navigate('/game')
+  }
+
+  // ✅ Guest button handler
+  const handlePlayAsGuest = () => {
+    loginAsGuest()
     resetGame()
     navigate('/game')
   }
@@ -319,25 +326,7 @@ const Home = () => {
             {user || isGuest ? '🎮 START GAME' : '🔐 LOGIN TO PLAY'}
           </motion.button>
 
-          {/* ✅ Change 4 — isGuest check add kiya */}
-          {!user && !isGuest && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.3 }}
-              style={{
-                fontFamily: 'var(--font-game)',
-                fontSize: '7px',
-                color: 'var(--text-muted)',
-                marginTop: '16px',
-                letterSpacing: '1px',
-              }}
-            >
-              LOGIN REQUIRED TO SAVE YOUR SCORES
-            </motion.p>
-          )}
-
-          {/* Guest mode badge */}
+          {/* ✅ Guest mode badge */}
           {isGuest && (
             <motion.p
               initial={{ opacity: 0 }}
@@ -353,6 +342,65 @@ const Home = () => {
             >
               👻 GUEST MODE — SCORES WON'T BE SAVED
             </motion.p>
+          )}
+
+          {/* ✅ Play as Guest button — sirf tab dikhao jab user logged in nahi hai aur guest bhi nahi */}
+          {!user && !isGuest && (
+            <>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.3 }}
+                style={{
+                  fontFamily: 'var(--font-game)',
+                  fontSize: '7px',
+                  color: 'var(--text-muted)',
+                  marginTop: '16px',
+                  letterSpacing: '1px',
+                }}
+              >
+                LOGIN REQUIRED TO SAVE YOUR SCORES
+              </motion.p>
+
+              {/* ✅ Play as Guest button */}
+              <motion.button
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.4 }}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={handlePlayAsGuest}
+                style={{
+                  marginTop: '16px',
+                  background: 'transparent',
+                  border: '1px solid rgba(6,182,212,0.5)',
+                  borderRadius: '12px',
+                  padding: '14px 40px',
+                  fontFamily: 'var(--font-game)',
+                  fontSize: '11px',
+                  color: 'var(--cyan-accent)',
+                  cursor: 'pointer',
+                  letterSpacing: '2px',
+                }}
+              >
+                👻 PLAY AS GUEST
+              </motion.button>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.5 }}
+                style={{
+                  fontFamily: 'var(--font-game)',
+                  fontSize: '7px',
+                  color: 'var(--text-muted)',
+                  marginTop: '8px',
+                  letterSpacing: '1px',
+                }}
+              >
+                SCORES WON'T BE SAVED IN GUEST MODE
+              </motion.p>
+            </>
           )}
         </motion.div>
       </motion.div>
