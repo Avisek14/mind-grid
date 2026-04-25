@@ -60,8 +60,10 @@ const Footer = () => {
   ]
 
   return (
+    // ✅ FIX 1 — width: 100% add kiya
     <footer style={{
       position: 'relative',
+      width: '100%',
       background: 'rgba(5, 5, 10, 0.95)',
       borderTop: '1px solid rgba(124,58,237,0.3)',
       padding: '48px 20px 32px',
@@ -90,8 +92,9 @@ const Footer = () => {
         filter: 'blur(1px)',
       }} />
 
+      {/* ✅ FIX 2 — maxWidth: 100% kiya */}
       <div style={{
-        maxWidth: '800px',
+        maxWidth: '100%',
         margin: '0 auto',
         position: 'relative',
         zIndex: 1,
@@ -116,7 +119,6 @@ const Footer = () => {
           }}>
             🧠 MINDGRID
           </div>
-          {/* ✅ Fixed — rgba se bright color */}
           <p style={{
             fontFamily: 'var(--font-game)',
             fontSize: '8px',
@@ -141,7 +143,6 @@ const Footer = () => {
           transition={{ duration: 0.6, delay: 0.1 }}
           style={{ textAlign: 'center', marginBottom: '32px' }}
         >
-          {/* ✅ Fixed */}
           <p style={{
             fontFamily: 'var(--font-game)',
             fontSize: '8px',
@@ -229,7 +230,6 @@ const Footer = () => {
               <path d="M14 3v2H7v14h14v-7h2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7zm7 0v6h-2V6.414l-8.293 8.293-1.414-1.414L17.586 5H15V3h6z"/>
             </svg>
           </motion.a>
-          {/* ✅ Fixed */}
           <p style={{
             fontFamily: 'var(--font-game)',
             fontSize: '7px',
@@ -274,7 +274,7 @@ const Footer = () => {
                 gap: '6px',
                 padding: '14px 20px',
                 background: 'rgba(255,255,255,0.05)',
-                border: `1px solid rgba(255,255,255,0.1)`,
+                border: '1px solid rgba(255,255,255,0.1)',
                 borderRadius: '12px',
                 textDecoration: 'none',
                 color: social.color,
@@ -282,7 +282,6 @@ const Footer = () => {
               }}
             >
               {social.icon}
-              {/* ✅ Fixed — label visible */}
               <span style={{
                 fontFamily: 'var(--font-game)',
                 fontSize: '6px',
@@ -338,7 +337,6 @@ const Footer = () => {
             </span>
             {' '}© 2026
           </motion.p>
-          {/* ✅ Fixed */}
           <p style={{
             fontFamily: 'var(--font-game)',
             fontSize: '7px',
