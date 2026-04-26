@@ -60,9 +60,9 @@ const Footer = () => {
   ]
 
   return (
+    // ✅ FIX — width: 100%, marginLeft hataya
     <div style={{
-      width: '100vw',
-      marginLeft: 'calc(-50vw + 50%)',
+      width: '100%',
       marginTop: '80px',
       position: 'relative',
       zIndex: 1,
