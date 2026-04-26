@@ -60,156 +60,163 @@ const Footer = () => {
   ]
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      style={{
-        width: '100%',
-        maxWidth: '800px',
-        marginTop: '80px',
-        position: 'relative',
-        zIndex: 1,
-        textAlign: 'center',
-      }}
-    >
-      {/* Glowing top border line */}
-      <div style={{
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, #a855f7, #3b82f6, #06b6d4, transparent)',
-        marginBottom: '40px',
-        filter: 'blur(1px)',
-      }} />
-
-      {/* MINDGRID branding */}
-      <div style={{
-        fontFamily: 'var(--font-game)',
-        fontSize: 'clamp(18px, 4vw, 26px)',
-        background: 'linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #06b6d4 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        letterSpacing: '4px',
-        marginBottom: '8px',
-        filter: 'drop-shadow(0 0 15px rgba(168,85,247,0.5))',
-      }}>
-        🧠 MINDGRID
-      </div>
-
-      <p style={{
-        fontFamily: 'var(--font-game)',
-        fontSize: '8px',
-        color: 'rgba(180,180,220,0.8)',
-        letterSpacing: '3px',
-        marginBottom: '36px',
-      }}>
-        MEMORY & LOGIC CHALLENGE
-      </p>
-
-      {/* Divider */}
-      <div style={{
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(124,58,237,0.4), transparent)',
-        marginBottom: '36px',
-      }} />
-
-      {/* Social links */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '16px',
-        flexWrap: 'wrap',
-        marginBottom: '36px',
-      }}>
-        {socials.map((social, i) => (
-          <motion.a
-            key={i}
-            href={social.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{
-              scale: 1.15,
-              y: -4,
-              boxShadow: `0 0 20px ${social.glow}`,
-            }}
-            whileTap={{ scale: 0.95 }}
-            title={social.label}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '14px 20px',
-              background: 'rgba(255,255,255,0.03)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              borderRadius: '12px',
-              textDecoration: 'none',
-              color: social.color,
-              minWidth: '70px',
-            }}
-          >
-            {social.icon}
-            <span style={{
-              fontFamily: 'var(--font-game)',
-              fontSize: '6px',
-              letterSpacing: '1px',
-              color: 'rgba(200,200,230,0.8)',
-            }}>
-              {social.label.toUpperCase()}
-            </span>
-          </motion.a>
-        ))}
-      </div>
-
-      {/* Divider */}
-      <div style={{
-        height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(124,58,237,0.3), transparent)',
-        marginBottom: '24px',
-      }} />
-
-      {/* Made with love */}
-      <motion.p
-        animate={{ opacity: [0.8, 1, 0.8] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+    <div style={{
+      width: '100vw',
+      marginLeft: 'calc(-50vw + 50%)',
+      marginTop: '80px',
+      position: 'relative',
+      zIndex: 1,
+    }}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
         style={{
-          fontFamily: 'var(--font-game)',
-          fontSize: '8px',
-          color: 'rgba(180,180,220,0.9)',
-          letterSpacing: '2px',
-          lineHeight: 2,
-          marginBottom: '8px',
+          maxWidth: '800px',
+          margin: '0 auto',
+          padding: '0 20px',
+          textAlign: 'center',
         }}
       >
-        MADE WITH{' '}
-        <motion.span
-          animate={{ scale: [1, 1.3, 1] }}
-          transition={{ duration: 1, repeat: Infinity }}
-          style={{ display: 'inline-block', color: '#ef4444' }}
-        >
-          ❤️
-        </motion.span>
-        {' '}BY{' '}
-        <span style={{
-          background: 'linear-gradient(135deg, #a855f7, #3b82f6)',
+        {/* Glowing top border line */}
+        <div style={{
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, #a855f7, #3b82f6, #06b6d4, transparent)',
+          marginBottom: '40px',
+          filter: 'blur(1px)',
+        }} />
+
+        {/* MINDGRID branding */}
+        <div style={{
+          fontFamily: 'var(--font-game)',
+          fontSize: 'clamp(18px, 4vw, 26px)',
+          background: 'linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #06b6d4 100%)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
+          letterSpacing: '4px',
+          marginBottom: '8px',
+          filter: 'drop-shadow(0 0 15px rgba(168,85,247,0.5))',
         }}>
-          AVISEK SAHOO
-        </span>
-        {' '}© 2026
-      </motion.p>
+          🧠 MINDGRID
+        </div>
 
-      <p style={{
-        fontFamily: 'var(--font-game)',
-        fontSize: '7px',
-        color: 'rgba(150,150,180,0.6)',
-        letterSpacing: '2px',
-        marginBottom: '20px',
-      }}>
-        ALL RIGHTS RESERVED
-      </p>
+        <p style={{
+          fontFamily: 'var(--font-game)',
+          fontSize: '8px',
+          color: 'rgba(180,180,220,0.8)',
+          letterSpacing: '3px',
+          marginBottom: '36px',
+        }}>
+          MEMORY & LOGIC CHALLENGE
+        </p>
 
-    </motion.div>
+        {/* Divider */}
+        <div style={{
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(124,58,237,0.4), transparent)',
+          marginBottom: '36px',
+        }} />
+
+        {/* Social links */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '16px',
+          flexWrap: 'wrap',
+          marginBottom: '36px',
+        }}>
+          {socials.map((social, i) => (
+            <motion.a
+              key={i}
+              href={social.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{
+                scale: 1.15,
+                y: -4,
+                boxShadow: `0 0 20px ${social.glow}`,
+              }}
+              whileTap={{ scale: 0.95 }}
+              title={social.label}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '14px 20px',
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: '12px',
+                textDecoration: 'none',
+                color: social.color,
+                minWidth: '70px',
+              }}
+            >
+              {social.icon}
+              <span style={{
+                fontFamily: 'var(--font-game)',
+                fontSize: '6px',
+                letterSpacing: '1px',
+                color: 'rgba(200,200,230,0.8)',
+              }}>
+                {social.label.toUpperCase()}
+              </span>
+            </motion.a>
+          ))}
+        </div>
+
+        {/* Divider */}
+        <div style={{
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(124,58,237,0.3), transparent)',
+          marginBottom: '24px',
+        }} />
+
+        {/* Made with love */}
+        <motion.p
+          animate={{ opacity: [0.8, 1, 0.8] }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          style={{
+            fontFamily: 'var(--font-game)',
+            fontSize: '8px',
+            color: 'rgba(180,180,220,0.9)',
+            letterSpacing: '2px',
+            lineHeight: 2,
+            marginBottom: '8px',
+          }}
+        >
+          MADE WITH{' '}
+          <motion.span
+            animate={{ scale: [1, 1.3, 1] }}
+            transition={{ duration: 1, repeat: Infinity }}
+            style={{ display: 'inline-block', color: '#ef4444' }}
+          >
+            ❤️
+          </motion.span>
+          {' '}BY{' '}
+          <span style={{
+            background: 'linear-gradient(135deg, #a855f7, #3b82f6)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
+            AVISEK SAHOO
+          </span>
+          {' '}© 2026
+        </motion.p>
+
+        <p style={{
+          fontFamily: 'var(--font-game)',
+          fontSize: '7px',
+          color: 'rgba(150,150,180,0.6)',
+          letterSpacing: '2px',
+          marginBottom: '20px',
+        }}>
+          ALL RIGHTS RESERVED
+        </p>
+
+      </motion.div>
+    </div>
   )
 }
 
