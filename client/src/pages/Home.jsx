@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useGame } from '../context/GameContext'
+import Footer from '../components/Footer'
 
 const difficulties = [
   {
@@ -442,6 +443,18 @@ const Home = () => {
           </motion.div>
         ))}
       </motion.div>
+
+      {/* ===== FOOTER — centered wrapper ===== */}
+      <div style={{
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'relative',
+        zIndex: 1,
+      }}>
+        <Footer />
+      </div>
 
     </div>
   )
