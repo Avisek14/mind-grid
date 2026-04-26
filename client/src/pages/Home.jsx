@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useGame } from '../context/GameContext'
-import Footer from '../components/Footer'
 
 const difficulties = [
   {
@@ -58,7 +57,6 @@ const Home = () => {
   }
 
   return (
-    // ✅ FIX — Outer wrapper, Footer bahar hai
     <div style={{
       minHeight: '100vh',
       display: 'flex',
@@ -455,9 +453,6 @@ const Home = () => {
 
       </div>
       {/* ===== END MAIN CONTENT ===== */}
-
-      {/* ✅ FIX — Footer bilkul bahar — sirf ek baar render hoga */}
-      <Footer />
 
     </div>
   )
