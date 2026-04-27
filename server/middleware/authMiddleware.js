@@ -1,4 +1,3 @@
-
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
@@ -6,8 +5,6 @@ const protect = async (req, res, next) => {
   try {
     let token;
 
-    // Token Authorization header mein aata hai
-    // Format: "Bearer eyJhbGciOiJIUzI1NiIs..."
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith('Bearer')
@@ -15,22 +12,49 @@ const protect = async (req, res, next) => {
       token = req.headers.authorization.split(' ')[1];
     }
 
-    // Token nahi mila
     if (!token) {
       return res.status(401).json({ message: 'Not authorized, no token' });
     }
 
-    // Token verify karo
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // User ko req object mein attach karo — Controllers use karenge
     req.user = await User.findById(decoded.id).select('-password');
-
-    next(); // Aage badho — Controller chalega
+    next();
     
   } catch (error) {
     res.status(401).json({ message: 'Not authorized, token failed' });
   }
 };
 
-module.exports = { protect };
+// ✅ Admin check — naya add kiya
+const adminProtect = async (req, res, next) => {
+  try {
+    let token;
+
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
+    ) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (!token) {
+      return res.status(401).json({ message: 'Not authorized, no token' });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select('-password');
+
+    // ✅ Admin email check karo
+    if (user.email !== process.env.ADMIN_EMAIL) {
+      return res.status(403).json({ message: 'Access denied — Admins only' });
+    }
+
+    req.user = user;
+    next();
+
+  } catch (error) {
+    res.status(401).json({ message: 'Not authorized, token failed' });
+  }
+};
+
+module.exports = { protect, adminProtect };
