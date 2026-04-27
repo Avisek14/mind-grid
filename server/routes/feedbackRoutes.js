@@ -9,8 +9,8 @@ const {
 const { protect } = require('../middleware/authMiddleware')
 
 router.post('/', protect, submitFeedback)
-router.get('/', protect, getAllFeedback)
 router.get('/stats', protect, getAdminStats)
+router.get('/', protect, getAllFeedback)
 router.delete('/:id', protect, deleteFeedback)
 
 module.exports = router
