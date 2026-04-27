@@ -28,3 +28,7 @@ export const getBestScoreAPI = () => API.get('/game/bestscore');
 // ---- LEADERBOARD APIs ----
 export const getLeaderboardAPI = (difficulty) =>
   API.get(`/leaderboard${difficulty ? `?difficulty=${difficulty}` : ''}`);
+
+// ---- FEEDBACK APIs ----
+export const submitFeedbackAPI = (data) => API.post('/feedback', data)
+export const getFeedbackAPI = () => API.get('/feedback')

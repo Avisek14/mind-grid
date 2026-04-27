@@ -1,17 +1,24 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useGame } from '../context/GameContext'
-import { getHistoryAPI } from '../services/api'
+import { getHistoryAPI, submitFeedbackAPI } from '../services/api'
 
 const Result = () => {
-  // ✅ isGuest add kiya — baaki sab same
   const { gameResult, timeTaken, difficulty, selectedOrder, resetGame, user, isGuest } = useGame()
   const navigate = useNavigate()
   const [lastGame, setLastGame] = useState(null)
 
+  // ✅ NEW — Feedback states
+  const [showFeedback, setShowFeedback] = useState(false)
+  const [rating, setRating] = useState(0)
+  const [hoveredRating, setHoveredRating] = useState(0)
+  const [message, setMessage] = useState('')
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false)
+  const [feedbackLoading, setFeedbackLoading] = useState(false)
+  const [feedbackError, setFeedbackError] = useState('')
+
   useEffect(() => {
-    // Agar result nahi hai toh home bhejo
     if (!gameResult) {
       navigate('/')
       return
@@ -20,7 +27,6 @@ const Result = () => {
   }, [])
 
   const fetchLastGame = async () => {
-    // ✅ Guest ka history fetch nahi hoga
     if (isGuest) return
     try {
       const res = await getHistoryAPI()
@@ -40,6 +46,35 @@ const Result = () => {
   const handleHome = () => {
     resetGame()
     navigate('/')
+  }
+
+  // ✅ NEW — Feedback submit handler
+  const handleFeedbackSubmit = async () => {
+    if (rating === 0) {
+      setFeedbackError('Please select a rating!')
+      return
+    }
+    if (message.trim().length < 5) {
+      setFeedbackError('Message too short! Min 5 characters.')
+      return
+    }
+
+    setFeedbackLoading(true)
+    setFeedbackError('')
+
+    try {
+      await submitFeedbackAPI({
+        rating,
+        message: message.trim(),
+        difficulty,
+        result: gameResult,
+      })
+      setFeedbackSubmitted(true)
+    } catch (e) {
+      setFeedbackError(e.response?.data?.message || 'Something went wrong!')
+    } finally {
+      setFeedbackLoading(false)
+    }
   }
 
   const isWin = gameResult === 'win'
@@ -70,7 +105,6 @@ const Result = () => {
         zIndex: 0,
       }} />
 
-      {/* Win confetti particles */}
       {isWin && <WinParticles />}
 
       <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '500px' }}>
@@ -244,7 +278,6 @@ const Result = () => {
                 lineHeight: 1.8,
               }}
             >
-              {/* ✅ Guest ke liye NOT SAVED message */}
               {isGuest ? (
                 <>👻 GUEST MODE — SCORE NOT SAVED!<br />CREATE AN ACCOUNT TO SAVE SCORES! 🎯</>
               ) : (
@@ -273,7 +306,6 @@ const Result = () => {
                 lineHeight: 1.8,
               }}
             >
-              {/* ✅ Guest ke liye NOT SAVED message */}
               {isGuest ? (
                 <>👻 GUEST MODE — SCORE NOT SAVED!<br />CREATE AN ACCOUNT TO SAVE SCORES! 🎯</>
               ) : (
@@ -282,6 +314,265 @@ const Result = () => {
             </motion.div>
           )}
         </motion.div>
+
+        {/* ✅ NEW — FEEDBACK SECTION — sirf logged in users ke liye */}
+        {!isGuest && user && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.0 }}
+            style={{ marginBottom: '24px' }}
+          >
+            {!showFeedback && !feedbackSubmitted && (
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setShowFeedback(true)}
+                style={{
+                  width: '100%',
+                  background: 'rgba(124,58,237,0.1)',
+                  border: '1px dashed rgba(124,58,237,0.5)',
+                  borderRadius: '12px',
+                  padding: '14px',
+                  fontFamily: 'var(--font-game)',
+                  fontSize: '9px',
+                  color: 'var(--purple-secondary)',
+                  cursor: 'pointer',
+                  letterSpacing: '2px',
+                }}
+              >
+                💬 GIVE FEEDBACK
+              </motion.button>
+            )}
+
+            {/* Feedback Form */}
+            <AnimatePresence>
+              {showFeedback && !feedbackSubmitted && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="card"
+                  style={{
+                    border: '1px solid rgba(124,58,237,0.4)',
+                    boxShadow: '0 0 20px rgba(124,58,237,0.1)',
+                    padding: '24px',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {/* Header */}
+                  <p style={{
+                    fontFamily: 'var(--font-game)',
+                    fontSize: '9px',
+                    color: 'var(--purple-secondary)',
+                    letterSpacing: '2px',
+                    textAlign: 'center',
+                    marginBottom: '20px',
+                  }}>
+                    ✨ RATE YOUR EXPERIENCE
+                  </p>
+
+                  {/* Star Rating */}
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    marginBottom: '20px',
+                  }}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <motion.button
+                        key={star}
+                        whileHover={{ scale: 1.3 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => setRating(star)}
+                        onMouseEnter={() => setHoveredRating(star)}
+                        onMouseLeave={() => setHoveredRating(0)}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          fontSize: '32px',
+                          filter: star <= (hoveredRating || rating)
+                            ? 'drop-shadow(0 0 8px rgba(234,179,8,0.8))'
+                            : 'grayscale(1) opacity(0.3)',
+                          transition: 'filter 0.2s ease',
+                        }}
+                      >
+                        ⭐
+                      </motion.button>
+                    ))}
+                  </div>
+
+                  {/* Rating label */}
+                  {(hoveredRating || rating) > 0 && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      style={{
+                        textAlign: 'center',
+                        fontFamily: 'var(--font-game)',
+                        fontSize: '8px',
+                        color: 'var(--cyan-accent)',
+                        letterSpacing: '1px',
+                        marginBottom: '16px',
+                      }}
+                    >
+                      {['', '😞 POOR', '😐 FAIR', '🙂 GOOD', '😊 GREAT', '🤩 AMAZING!'][hoveredRating || rating]}
+                    </motion.p>
+                  )}
+
+                  {/* Comment Box */}
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={{
+                      display: 'block',
+                      fontFamily: 'var(--font-game)',
+                      fontSize: '7px',
+                      color: 'var(--purple-secondary)',
+                      letterSpacing: '2px',
+                      marginBottom: '8px',
+                    }}>
+                      YOUR SUGGESTION / FEEDBACK
+                    </label>
+                    <textarea
+                      value={message}
+                      onChange={(e) => {
+                        setMessage(e.target.value)
+                        setFeedbackError('')
+                      }}
+                      placeholder="Tell us what you think or suggest a new feature..."
+                      maxLength={500}
+                      rows={4}
+                      style={{
+                        width: '100%',
+                        background: 'var(--bg-secondary)',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: '8px',
+                        padding: '12px',
+                        fontFamily: 'var(--font-main)',
+                        fontSize: '13px',
+                        color: 'var(--text-primary)',
+                        resize: 'none',
+                        outline: 'none',
+                        boxSizing: 'border-box',
+                        transition: 'border 0.3s ease',
+                      }}
+                      onFocus={(e) => e.target.style.borderColor = 'var(--purple-primary)'}
+                      onBlur={(e) => e.target.style.borderColor = 'var(--border-color)'}
+                    />
+                    <p style={{
+                      textAlign: 'right',
+                      fontFamily: 'var(--font-game)',
+                      fontSize: '6px',
+                      color: 'var(--text-muted)',
+                      marginTop: '4px',
+                    }}>
+                      {message.length}/500
+                    </p>
+                  </div>
+
+                  {/* Error */}
+                  {feedbackError && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      style={{
+                        fontFamily: 'var(--font-game)',
+                        fontSize: '7px',
+                        color: 'var(--red-wrong)',
+                        textAlign: 'center',
+                        marginBottom: '12px',
+                        letterSpacing: '1px',
+                      }}
+                    >
+                      ⚠️ {feedbackError}
+                    </motion.p>
+                  )}
+
+                  {/* Buttons */}
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleFeedbackSubmit}
+                      disabled={feedbackLoading}
+                      style={{
+                        flex: 1,
+                        background: 'linear-gradient(135deg, #7c3aed, #2563eb)',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '12px',
+                        fontFamily: 'var(--font-game)',
+                        fontSize: '8px',
+                        color: 'white',
+                        cursor: feedbackLoading ? 'not-allowed' : 'pointer',
+                        letterSpacing: '2px',
+                        opacity: feedbackLoading ? 0.7 : 1,
+                        boxShadow: '0 0 15px rgba(124,58,237,0.4)',
+                      }}
+                    >
+                      {feedbackLoading ? '⏳ SENDING...' : '📤 SUBMIT'}
+                    </motion.button>
+
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        setShowFeedback(false)
+                        setRating(0)
+                        setMessage('')
+                        setFeedbackError('')
+                      }}
+                      style={{
+                        background: 'transparent',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: '8px',
+                        padding: '12px 20px',
+                        fontFamily: 'var(--font-game)',
+                        fontSize: '8px',
+                        color: 'var(--text-muted)',
+                        cursor: 'pointer',
+                        letterSpacing: '1px',
+                      }}
+                    >
+                      CANCEL
+                    </motion.button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* ✅ Thank you message after submit */}
+            <AnimatePresence>
+              {feedbackSubmitted && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ type: 'spring', damping: 12 }}
+                  style={{
+                    background: 'rgba(34,197,94,0.1)',
+                    border: '1px solid rgba(34,197,94,0.4)',
+                    borderRadius: '12px',
+                    padding: '20px',
+                    textAlign: 'center',
+                  }}
+                >
+                  <div style={{ fontSize: '32px', marginBottom: '8px' }}>🎉</div>
+                  <p style={{
+                    fontFamily: 'var(--font-game)',
+                    fontSize: '9px',
+                    color: '#22c55e',
+                    letterSpacing: '2px',
+                    lineHeight: 1.8,
+                  }}>
+                    THANK YOU FOR YOUR FEEDBACK!<br />
+                    WE'LL MAKE IT EVEN BETTER! 🚀
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        )}
 
         {/* Action Buttons */}
         <motion.div
@@ -358,7 +649,6 @@ const Result = () => {
   )
 }
 
-// Win confetti particles
 const WinParticles = () => (
   <div style={{
     position: 'fixed',
