@@ -32,3 +32,7 @@ export const getLeaderboardAPI = (difficulty) =>
 // ---- FEEDBACK APIs ----
 export const submitFeedbackAPI = (data) => API.post('/feedback', data)
 export const getFeedbackAPI = () => API.get('/feedback')
+
+// ---- ADMIN APIs ----
+export const getAdminStatsAPI = () => API.get('/feedback/stats')
+export const deleteFeedbackAPI = (id) => API.delete(`/feedback/${id}`)

@@ -8,6 +8,7 @@ import Result from './pages/Result'
 import Leaderboard from './pages/Leaderboard'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import AdminPage from './pages/AdminPage'
 import './App.css'
 
 const ProtectedRoute = ({ children }) => {
@@ -38,9 +39,13 @@ function AppRoutes() {
           <Route path="/result" element={
             <ProtectedRoute><Result /></ProtectedRoute>
           } />
+          {/* ✅ NEW — Admin route add kiya */}
+          <Route path="/admin-panel" element={
+            <ProtectedRoute><AdminPage /></ProtectedRoute>
+          } />
         </Routes>
       </div>
-      {/* ✅ Footer yahan — bilkul neeche, full width */}
+      {/* Footer sirf Home page pe */}
       <FooterWrapper />
     </div>
   )

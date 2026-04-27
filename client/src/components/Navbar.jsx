@@ -3,6 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useGame } from '../context/GameContext'
 import { motion, AnimatePresence } from 'framer-motion'
 
+const ADMIN_EMAIL = 'sahoo143avisek@gmail.com'
+
 const Navbar = () => {
   const { user, logoutUser, isGuest, loginAsGuest, exitGuest } = useGame()
   const navigate = useNavigate()
@@ -21,7 +23,6 @@ const Navbar = () => {
     setMenuOpen(false)
   }
 
-  // ✅ NEW — Guest play handler
   const handleGuestPlay = () => {
     loginAsGuest()
     navigate('/')
@@ -67,7 +68,6 @@ const Navbar = () => {
         {/* DESKTOP LINKS */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }} className="desktop-nav">
 
-          {/* ✅ HOME button — desktop */}
           <NavLink to="/" current={location.pathname}>
             🏠 HOME
           </NavLink>
@@ -75,6 +75,13 @@ const Navbar = () => {
           <NavLink to="/leaderboard" current={location.pathname}>
             🏆 LEADERBOARD
           </NavLink>
+
+          {/* ✅ NEW — Admin link desktop — sirf admin ko dikhega */}
+          {user && user.email === ADMIN_EMAIL && (
+            <NavLink to="/admin-panel" current={location.pathname}>
+              🛡️ ADMIN
+            </NavLink>
+          )}
 
           {user ? (
             <>
@@ -151,7 +158,6 @@ const Navbar = () => {
             <>
               <NavLink to="/login" current={location.pathname}>LOGIN</NavLink>
 
-              {/* ✅ NEW — Guest button desktop */}
               <motion.button
                 whileHover={{
                   scale: 1.05,
@@ -277,7 +283,6 @@ const Navbar = () => {
               </div>
             )}
 
-            {/* ✅ HOME button — hamburger */}
             <Link to="/" style={{ textDecoration: 'none' }} onClick={() => setMenuOpen(false)}>
               <motion.div
                 whileTap={{ scale: 0.98 }}
@@ -314,6 +319,27 @@ const Navbar = () => {
               </motion.div>
             </Link>
 
+            {/* ✅ NEW — Admin link hamburger — sirf admin ko dikhega */}
+            {user && user.email === ADMIN_EMAIL && (
+              <Link to="/admin-panel" style={{ textDecoration: 'none' }} onClick={() => setMenuOpen(false)}>
+                <motion.div
+                  whileTap={{ scale: 0.98 }}
+                  style={{
+                    fontFamily: 'var(--font-game)',
+                    fontSize: '9px',
+                    color: location.pathname === '/admin-panel' ? '#a855f7' : 'var(--purple-secondary)',
+                    letterSpacing: '2px',
+                    padding: '14px 16px',
+                    background: 'rgba(124,58,237,0.1)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(124,58,237,0.3)',
+                  }}
+                >
+                  🛡️ ADMIN PANEL
+                </motion.div>
+              </Link>
+            )}
+
             {user ? (
               <>
                 <motion.button whileTap={{ scale: 0.98 }} onClick={handleLogout} style={{
@@ -347,7 +373,6 @@ const Navbar = () => {
                   </motion.div>
                 </Link>
 
-                {/* ✅ NEW — Guest button hamburger menu */}
                 <motion.button
                   whileTap={{ scale: 0.98 }}
                   onClick={handleGuestPlay}
